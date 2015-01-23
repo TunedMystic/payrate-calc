@@ -10,14 +10,82 @@
 </head>
 
 <body id="home">
-
-  <h1>Pay Rate Calculator</h1>
+  
+  <div class="container" ng-app="payrateApp">
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <h1><strong>Pay Rate Calculator</strong></h1>
+      </div>
+    </div>
+    
+    <!-- hour day week month year -->
+    <div class="row" ng-controller="PayrateController">
+      <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Hour</th>
+              <th>Day</th>
+              <th>Week</th>
+              <th>Month</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <!-- Hour -->
+              <td>
+                <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control input-pay" data-scale="hour" id="pay-hour" placeholder="0.00" ng-model="pay.hour">
+								</div>
+              </td>
+              
+              <!-- Day -->
+              <td>
+                <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control input-pay" data-scale="day" id="pay-day" placeholder="0.00" ng-model="pay.day">
+								</div>
+              </td>
+              
+              <!-- Week -->
+              <td>
+                <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control input-pay" data-scale="week" id="pay-week" placeholder="0.00" ng-model="pay.week">
+								</div>
+              </td>
+              
+              <!-- Month -->
+              <td>
+                <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control input-pay" data-scale="month" id="pay-month" placeholder="0.00" ng-model="pay.month">
+								</div>
+              </td>
+              
+              <!-- Year -->
+              <td>
+                <div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" class="form-control input-pay" data-scale="year" id="pay-year" placeholder="0.00" ng-model="pay.year">
+								</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div> <!-- /.container -->
   
   
   
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.10/angular.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  
   
   <script type="text/javascript">
     var PayRate = PayRate || {};
@@ -66,6 +134,7 @@
     PayRate.Pay = function(amount, scale) {
       this.amount = typeof(amount) !== "undefined" ? amount : 0;
       this.scale = typeof(scale) !== "undefined" ? scale : PayRate.Hour;
+      return this;
     };
     
     // Get the factor, multiply or divide, then change the internal scale.
@@ -114,7 +183,7 @@
         return 1;
       // Determine if 'Scale1' is less than or greater than 'Scale2'.
       var ratio = PayRate.cmpSc(scale1, scale2);
-      console.log("Ratio is " + ratio);
+      //console.log("Ratio is " + ratio);
       
       // Collect the scale factors.
       var factor = [];
@@ -125,19 +194,21 @@
         // If it is the last loop, push only if descending.
         if(_.isEqual(PayRate.cmpSc(i, scale2)) === true) {
           if(_.isEqual(ratio, PayRate.Scale["gt"]) === false) {
-            console.log("Last loop. i is now " + i["name"] + "\n");
+            //console.log("Last loop. i is now " + i["name"] + "\n");
             factor.push(i["factor"]);
           }
           break;
         }
         
-        console.log("i is now " + i["name"] + "\n");
+        //console.log("i is now " + i["name"] + "\n");
         // If the ratio is ascending, and the counter is the first scale.
         if(_.isEqual(ratio, PayRate.Scale["lt"]) === true && _.isEqual(i, scale1) === true)
-          console.log("Ratio Ascending, counter first scale");
+          //console.log("Ratio Ascending, counter first scale");
+          ;
         // If the ratio is descending, and the counter is the last scale.
         else if(_.isEqual(ratio, PayRate.Scale["gt"]) === true && _.isEqual(i, scale2) === true)
-          console.log("Ratio Descending, counter last scale");
+          //console.log("Ratio Descending, counter last scale");
+          ;
         else 
           factor.push(i["factor"]);
       }
@@ -151,6 +222,109 @@
     };
     
   </script>
+  
+  <script type="text/javascript">
+    
+    function clearAllPayRates() {
+      $(".input-pay").each(function() {
+        $(this).val("");
+      });
+    }
+    
+    // Update all PayRate inputs based on parameters 'amount' and 'scale'.
+    function updateAllPayRates(amount, scale) {
+      function capitalise(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+      scale = capitalise(scale);
+      
+      $(".input-pay").each(function() {
+        var This = $(this);
+        var elementScale = This.data("scale");
+        var stringFunction = "return new PayRate.Pay("+ amount.toString() + ", PayRate['" + scale.toString() + "'])." + elementScale + "()";
+        var newPayRate = new Function(stringFunction)();
+        This.val(newPayRate.amount);
+      });
+    }
+  </script>
+  
+  <script type="text/javascript">
+    (function() {
+      
+      var app = angular.module("payrateApp", []);
+      
+      app.controller("PayrateController", ["$scope", function($scope) {
+        $scope.pay = {
+          "hour": "",
+          "day": "",
+          "week": "",
+          "month": "",
+          "year": "",
+        };
+      }]);
+      
+      app.directive("inputPay", function() {
+        return {
+          restrict: "C",
+          link: function(scope, elem, attrs) {
+            
+            // Watch the directive's model (pay.hour, pay.day, pay.week, pay.month, pay.year).
+            // If value is changed, then calculate new payrate for all inputs.
+            scope.$watch(attrs.ngModel, function(newValue) {
+              if(newValue == "") {
+                clearAllPayRates();
+              }
+              else {
+                var parsedVal = parseFloat(newValue) || null;
+                // Check if 'newValue' was parsed correctly, and is a number.
+                if(parsedVal !== null)
+                  // Update all inputs.
+                  updateAllPayRates(parsedVal, attrs.scale);
+              }
+            });
+          }, //.link
+        };
+      }); //.directive
+      
+    })();
+  </script>
+  
+  <!-- script type="text/javascript">
+    $(document).ready(function() {
+      // Apply the payrate conversion to all inputs except the one that is focused.
+      $(".input-pay").keypress(function(e) {
+        var t = this;
+        
+        var inputChar = String.fromCharCode(e.charCode);
+        // Attempt to parse the input to a number.
+        var inputChar = parseFloat(inputChar);
+        var num = parseFloat($(t).val()) || null;
+        window.nn = {"num": num, "inputChar": inputChar};
+        console.log(window.nn);
+        
+        if(typeof(num) !== "number")
+          num = inputChar;
+        else
+          num += inputChar
+          
+        console.log("$" + num);
+        
+        console.log("You clicked on an input.");
+        console.log("Id: " + $(this).attr("id"));
+        
+        console.log("-----------------------------");
+        $(".input-pay").each(function(index) {
+          if($(this).attr("id") === $(t).attr("id"))
+            console.log("****");
+          else
+            console.log($(this).attr("id"));
+        });
+        console.log("-----------------------------");
+        
+      });
+      
+    });
+  </script -->
 
 </body>
 </html>
