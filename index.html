@@ -9,9 +9,10 @@
   <![endif]-->
 </head>
 
-<body id="home">
+<body id="home" ng-app="payrateApp">
   
-  <div class="container" ng-app="payrateApp">
+  <div class="container" ng-controller="PayrateController">
+    
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <h1><strong>Pay Rate Calculator</strong></h1>
@@ -19,7 +20,7 @@
     </div>
     
     <!-- hour day week month year -->
-    <div class="row" ng-controller="PayrateController">
+    <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <table class="table">
           <thead>
@@ -37,7 +38,7 @@
               <td>
                 <div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control input-pay" data-scale="hour" id="pay-hour" placeholder="0.00" ng-model="pay.hour">
+									<input type="text" class="form-control input-lg input-pay" data-scale="hour" id="pay-hour" placeholder="0.00" ng-model="pay.hour">
 								</div>
               </td>
               
@@ -45,7 +46,7 @@
               <td>
                 <div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control input-pay" data-scale="day" id="pay-day" placeholder="0.00" ng-model="pay.day">
+									<input type="text" class="form-control input-lg input-pay" data-scale="day" id="pay-day" placeholder="0.00" ng-model="pay.day">
 								</div>
               </td>
               
@@ -53,7 +54,7 @@
               <td>
                 <div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control input-pay" data-scale="week" id="pay-week" placeholder="0.00" ng-model="pay.week">
+									<input type="text" class="form-control input-lg input-pay" data-scale="week" id="pay-week" placeholder="0.00" ng-model="pay.week">
 								</div>
               </td>
               
@@ -61,7 +62,7 @@
               <td>
                 <div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control input-pay" data-scale="month" id="pay-month" placeholder="0.00" ng-model="pay.month">
+									<input type="text" class="form-control input-lg input-pay" data-scale="month" id="pay-month" placeholder="0.00" ng-model="pay.month">
 								</div>
               </td>
               
@@ -69,7 +70,7 @@
               <td>
                 <div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" class="form-control input-pay" data-scale="year" id="pay-year" placeholder="0.00" ng-model="pay.year">
+									<input type="text" class="form-control input-lg input-pay" data-scale="year" id="pay-year" placeholder="0.00" ng-model="pay.year">
 								</div>
               </td>
             </tr>
@@ -77,6 +78,34 @@
         </table>
       </div>
     </div>
+    
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="well">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Hour</th>
+                <th>Day</th>
+                <th>Week</th>
+                <th>Month</th>
+                <th>Year</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="chunk in tableData">
+                <td>{{ chunk.amount | currency }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
   </div> <!-- /.container -->
   
   
@@ -261,6 +290,18 @@
           "month": "",
           "year": "",
         };
+        
+        $scope.tableData = [
+          {"amount": 12, "scale": "Hour"},
+          {"amount": 15, "scale": "Hour"},
+          {"amount": 20, "scale": "Hour"},
+          {"amount": 30, "scale": "Hour"},
+          {"amount": 35, "scale": "Hour"},
+          {"amount": 40, "scale": "Hour"},
+          {"amount": 50, "scale": "Hour"},
+          {"amount": 60, "scale": "Hour"},
+        ];
+        
       }]);
       
       app.directive("inputPay", function() {
@@ -289,42 +330,9 @@
     })();
   </script>
   
-  <!-- script type="text/javascript">
-    $(document).ready(function() {
-      // Apply the payrate conversion to all inputs except the one that is focused.
-      $(".input-pay").keypress(function(e) {
-        var t = this;
-        
-        var inputChar = String.fromCharCode(e.charCode);
-        // Attempt to parse the input to a number.
-        var inputChar = parseFloat(inputChar);
-        var num = parseFloat($(t).val()) || null;
-        window.nn = {"num": num, "inputChar": inputChar};
-        console.log(window.nn);
-        
-        if(typeof(num) !== "number")
-          num = inputChar;
-        else
-          num += inputChar
-          
-        console.log("$" + num);
-        
-        console.log("You clicked on an input.");
-        console.log("Id: " + $(this).attr("id"));
-        
-        console.log("-----------------------------");
-        $(".input-pay").each(function(index) {
-          if($(this).attr("id") === $(t).attr("id"))
-            console.log("****");
-          else
-            console.log($(this).attr("id"));
-        });
-        console.log("-----------------------------");
-        
-      });
-      
-    });
-  </script -->
-
+  <script type="text/javascript">
+    
+  </script>
+  
 </body>
 </html>
