@@ -7,20 +7,47 @@
   <!--[if IE]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  <style>
+    .default-table table thead tr {
+      background-color: #E2E2E2;
+    }
+    .default-table table thead tr th {
+      text-align: center;
+    }
+    .app-title {
+      margin-top: 20px;
+    }
+    .app-input {
+      margin-top: 60px;
+    }
+    .app-table {
+      margin-top: 60px;
+    }
+    .footer {
+      margin-top: 40px;
+    }
+    .footer .well {
+      padding: 10px inherit;
+      margin-bottom: 0;
+    }
+    .footer .well p {
+      margin-bottom: 0;
+    }
+  </style>
 </head>
 
 <body id="home" ng-app="payrateApp">
   
   <div class="container" ng-controller="PayrateController">
     
-    <div class="row">
+    <div class="row app-title">
       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <h1><strong>Pay Rate Calculator</strong></h1>
       </div>
     </div>
     
     <!-- hour day week month year -->
-    <div class="row">
+    <div class="row app-input">
       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <table class="table">
           <thead>
@@ -79,10 +106,10 @@
       </div>
     </div>
     
-    <div class="row">
+    <div class="row app-table">
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <div class="well">
-          <table class="table">
+        <div class="panel panel-default default-table text-center">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th>Hour</th>
@@ -94,11 +121,11 @@
             </thead>
             <tbody>
               <tr ng-repeat="chunk in tableData">
-                <td>{{ chunk.amount | currency }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ makePayRate(chunk.amount, chunk.scale, "hour")  | currency }}</td>
+                <td>{{ makePayRate(chunk.amount, chunk.scale, "day")   | currency }}</td>
+                <td>{{ makePayRate(chunk.amount, chunk.scale, "week")  | currency }}</td>
+                <td>{{ makePayRate(chunk.amount, chunk.scale, "month") | currency }}</td>
+                <td>{{ makePayRate(chunk.amount, chunk.scale, "year")  | currency }}</td>
               </tr>
             </tbody>
           </table>
@@ -106,6 +133,19 @@
       </div>
     </div>
     
+  </div> <!-- /.container -->
+  
+  
+  <div class="container">
+    <div class="row footer">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="well text-center">
+          <p>Created by Sandeep Jadoonanan. &copy; Copyright 
+            <script>document.write(" - "+new Date().getFullYear());</script>.
+          </p>
+        </div>
+      </div>
+    </div>
   </div> <!-- /.container -->
   
   
@@ -302,6 +342,13 @@
           {"amount": 60, "scale": "Hour"},
         ];
         
+        // Make a payment object. 'amount' and 'scale1' initializes the object.
+        // 'scale2' sets the payment object to the desired scale.
+        $scope.makePayRate = function(amount, scale1, scale2) {
+          var stringFunction = "return new PayRate.Pay(" + amount.toString() + ", PayRate['" + scale1.toString() + "'])." + scale2.toString() + "()";
+          return new Function(stringFunction)().amount;
+        };
+        
       }]);
       
       app.directive("inputPay", function() {
@@ -331,7 +378,9 @@
   </script>
   
   <script type="text/javascript">
-    
+    function getYear() {
+      return new Date().getYear();
+    }
   </script>
   
 </body>
