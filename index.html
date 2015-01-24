@@ -8,6 +8,9 @@
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
   <style>
+    body {
+      background-color: #FBFCFC;
+    }
     .default-table table thead tr {
       background-color: #E2E2E2;
     }
@@ -17,8 +20,14 @@
     .app-title {
       margin-top: 20px;
     }
+    .app-title h2 {
+      margin: 0px inherit;
+    }
     .app-input {
       margin-top: 60px;
+    }
+    .app-input table thead tr th {
+      text-align: center;
     }
     .app-table {
       margin-top: 60px;
@@ -43,6 +52,7 @@
     <div class="row app-title">
       <div class="col-md-12 col-sm-12 col-xs-12 text-center">
         <h1><strong>Pay Rate Calculator</strong></h1>
+        <h2><small>View the code <a href="http://github.com/tunedmystic/payrate-calc/">here</a></small></h2>
       </div>
     </div>
     
@@ -140,7 +150,7 @@
     <div class="row footer">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="well text-center">
-          <p>Created by Sandeep Jadoonanan. &copy; Copyright 
+          <p>Created by <a href="http://smallcode.me">Sandeep Jadoonanan</a>. &copy; Copyright 
             <script>document.write(" - "+new Date().getFullYear());</script>.
           </p>
         </div>
